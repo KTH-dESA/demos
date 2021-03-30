@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - geopandas
+  - matplotlib
+  - notebook
+  - plotly
+  - rasterio
+  - rasterstats
