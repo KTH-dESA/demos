@@ -1,4 +1,5 @@
 import smtplib
+from csv import DictReader
 from os.path import basename
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
@@ -50,18 +51,17 @@ Mr. Brainiac
 """.format(name)
     return text
 
-with open("../Stakeholder database_E3M.csv") as csvfile:
+with open("./mailing/recipients.csv") as csvfile:
     reader = DictReader(csvfile, fieldnames=['name', 'email'])
 
     next(reader)
     for index, row in enumerate(reader):
-    
+
         email = row['email']
         print("This email will be sent to {}".format(email))
         send_mail('wusher@kth.se',
                   [email],
                   "Request for a letter of support",
                   get_text(row['name']),
-                  files=['./split/CLEAR_Stakeholder_Letter_{}.pdf'.format(filename),
-                         '../CLEAR_Stakeholders_letter_template.docx'],
+                  files=[],
                   server='smtp.kth.se')
