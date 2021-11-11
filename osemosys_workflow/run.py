@@ -2,6 +2,11 @@
 """
 import sys
 
+def load_config(filepath: str) -> Dict:
+    with open(filepath, 'r') as configfile:
+        config = load(configfile, Loader=SafeLoader)
+    return config
+
 if __name__ == "__main__":
     
     args = sys.argv[1:]
@@ -13,3 +18,7 @@ if __name__ == "__main__":
     data_path = args[0]
     config_path = args[1]
     outpath = args[2]
+
+    config = load_config(config_path)
+
+    
