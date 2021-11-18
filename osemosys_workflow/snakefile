@@ -1,0 +1,12 @@
+SCENARIOS = ['utopia1', 'utopia2']
+rule all:
+    input:
+        expand("data/{scen}/{scen}.txt", scen=SCENARIOS) #for testing, to be changed during development
+
+rule convert_dp:
+    input:
+        dp_path = "data/{scen}/datapackage.json"
+    output:
+        df_path = "data/{scen}/{scen}.txt"
+    shell:
+        "otoole convert datapackage datafile {input.dp_path} {output.df_path}"
