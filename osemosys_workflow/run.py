@@ -1,6 +1,8 @@
 """This script connects the different steps in running one or multiple scenarios of an OSeMOSYS model.
 """
 import sys
+from typing import Dict
+from yaml import load, SafeLoader
 
 def load_config(filepath: str) -> Dict:
     with open(filepath, 'r') as configfile:
