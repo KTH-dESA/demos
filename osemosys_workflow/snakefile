@@ -1,7 +1,7 @@
 SCENARIOS = ['utopia1', 'utopia2']
 rule all:
     input:
-        expand("data/{scen}/{scen}.txt", scen=SCENARIOS) #for testing, to be changed during development
+        expand("data/{scen}/{scen}.lp", scen=SCENARIOS) #for testing, to be changed during development
 
 rule convert_dp:
     input:
@@ -10,3 +10,13 @@ rule convert_dp:
         df_path = "data/{scen}/{scen}.txt"
     shell:
         "otoole convert datapackage datafile {input.dp_path} {output.df_path}"
+
+rule build_lp:
+    input:
+        df_path = "data/{scen}/{scen}.txt"
+    params:
+        model_path = "model/osemosys.txt"
+    output:
+        lp_path = "data/{scen}/{scen}.lp"
+    shell:
+        "glpsol -m {params.model_path} -d {input.df_path} --wlp {output.lp_path} --check"
