@@ -1,7 +1,7 @@
 SCENARIOS = ['utopia1', 'utopia2']
 rule all:
     input:
-        expand("data/{scen}/{scen}.lp", scen=SCENARIOS) #for testing, to be changed during development
+        expand("results/{scen}/{scen}.sol", scen=SCENARIOS) #for testing, to be changed during development
 
 rule convert_dp:
     input:
@@ -20,3 +20,13 @@ rule build_lp:
         lp_path = "data/{scen}/{scen}.lp"
     shell:
         "glpsol -m {params.model_path} -d {input.df_path} --wlp {output.lp_path} --check"
+
+rule run_model:
+    input:
+        lp_path = "data/{scen}/{scen}.lp"
+    params:
+        ilp_path = "results/{scen}/{scen}.ilp"
+    output:
+        sol_path = "results/{scen}/{scen}.sol"
+    shell:
+        "gurobi_cl ResultFile={params.ilp_path} ResultFile={output.sol_path} {input.lp_path}"
