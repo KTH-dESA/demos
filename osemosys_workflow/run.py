@@ -1,26 +1,31 @@
-"""This script connects the different steps in running one or multiple scenarios of an OSeMOSYS model.
+"""This script runs OSeMOSYS models using gurobi. It takes as input an lp-file and produces a sol-file.
 """
 import sys
-from typing import Dict
-from yaml import load, SafeLoader
+import gurobipy
 
-def load_config(filepath: str) -> Dict:
-    with open(filepath, 'r') as configfile:
-        config = load(configfile, Loader=SafeLoader)
-    return config
+def sol_gurobi(lp_path: str, ilp_path: str, outpath: str):
+    lp_path = "data/utopia2/utopia2.lp"
+    m = gurobipy.read(lp_path)
+    m.optimize()
+    dual = m.Pi
+    print(dual)
+    try:
+        m.write(outpath)
+    except:
+        m.computeIIS()
+        m.write(ilp_path)
+    return
 
 if __name__ == "__main__":
     
     args = sys.argv[1:]
 
     if len(args) != 3:
-        print("Usage: python run.py <data_path> <config.path> <output_path>")
+        print("Usage: python run.py <lp_path> <ilp.path> <output_path>")
         exit(1)
 
-    data_path = args[0]
-    config_path = args[1]
+    lp_path = args[0]
+    ilp_path = args[1]
     outpath = args[2]
-
-    config = load_config(config_path)
-
     
+    sol_gurobi(lp_path, ilp_path, outpath)
