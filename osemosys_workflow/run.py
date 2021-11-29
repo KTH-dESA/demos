@@ -4,11 +4,13 @@ import sys
 import gurobipy
 
 def sol_gurobi(lp_path: str, ilp_path: str, outpath: str):
-    lp_path = "data/utopia2/utopia2.lp"
+    #lp_path = "data/utopia2/utopia2.lp" #for testing
     m = gurobipy.read(lp_path)
     m.optimize()
     dual = m.Pi
-    print(dual)
+    with open('results/dual.csv', 'w') as f:
+        for i in dual:
+            f.write("%s\n" % i)
     try:
         m.write(outpath)
     except:
