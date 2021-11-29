@@ -8,9 +8,10 @@ def sol_gurobi(lp_path: str, ilp_path: str, outpath: str):
     m = gurobipy.read(lp_path)
     m.optimize()
     dual = m.Pi
+    constr = m.getConstrs()
     with open('results/dual.csv', 'w') as f:
-        for i in dual:
-            f.write("%s\n" % i)
+        for i in range(len(dual)):
+            f.write("%(const)s,%(dual)s\n" % {'const': constr[i], 'dual': dual[i]})
     try:
         m.write(outpath)
     except:
