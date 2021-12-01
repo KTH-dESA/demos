@@ -25,11 +25,11 @@ rule run_model:
     input:
         lp_path = "data/{scen}/{scen}.lp"
     params:
-        ilp_path = "results/{scen}/{scen}.ilp"
+        path = "results/{scen}/{scen}"
     output:
         sol_path = "results/{scen}/{scen}.sol"
     shell:
-        "gurobi_cl ResultFile={params.ilp_path} ResultFile={output.sol_path} {input.lp_path}"
+        "python run.py {input.lp_path} {params.path} {output.sol_path}"
 
 rule convert_sol:
     input:
