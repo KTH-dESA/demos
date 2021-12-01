@@ -13,9 +13,12 @@ def sol_gurobi(lp_path: str):
     return m
 
 def get_dual(model):
-    dual = model.Pi
-    constr = model.getConstrs()
-    df_dual = pd.DataFrame(dual, index=constr, columns=['value'])
+    try:
+        dual = model.Pi
+        constr = model.getConstrs()
+        df_dual = pd.DataFrame(dual, index=constr, columns=['value'])
+    except:
+        df_dual = pd.DataFrame(columns=['value'])
     return df_dual
 
 def write_dual(df_dual: pd.DataFrame, path: str):
@@ -36,15 +39,19 @@ if __name__ == "__main__":
     
     args = sys.argv[1:]
 
-    if len(args) != 3:
-        print("Usage: python run.py <lp_path> <generic_path> <output_path>")
+    if len(args) != 2:
+        print("Usage: python run.py <lp_path> <generic_out_path>")
         exit(1)
 
     lp_path = args[0]
     gen_path = args[1]
-    outpath = args[2]
+
+    outpath = gen_path + ".sol"
     
     model = sol_gurobi(lp_path)
     df_dual = get_dual(model)
     write_dual(df_dual, gen_path)
     write_sol(model, outpath, gen_path)
+
+    file_done = open(gen_path+"_sol.txt", "w")
+    file_done.close()

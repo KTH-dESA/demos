@@ -27,17 +27,18 @@ rule run_model:
     params:
         path = "results/{scen}/{scen}"
     output:
-        sol_path = "results/{scen}/{scen}.sol"
+        done_path = "results/{scen}/{scen}_sol.txt"
     shell:
-        "python run.py {input.lp_path} {params.path} {output.sol_path}"
+        "python run.py {input.lp_path} {params.path}"
 
 rule convert_sol:
     input:
-        sol_path = "results/{scen}/{scen}.sol",
+        sol_complete_path = "results/{scen}/{scen}_sol.txt",
         dp_path = "data/{scen}/datapackage.json"
     params:
+        sol_path = "results/{scen}/{scen}.sol",
         res_folder = "results/{scen}/results_csv"
     output:
         res_path = "results/{scen}/results_csv/UseByTechnology.csv"
     shell:
-        "otoole results gurobi csv {input.sol_path} {params.res_folder} --input_datapackage {input.dp_path}"
+        "otoole results gurobi csv {params.sol_path} {params.res_folder} --input_datapackage {input.dp_path}"
