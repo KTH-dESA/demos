@@ -53,5 +53,5 @@ if __name__ == "__main__":
     write_dual(df_dual, gen_path)
     write_sol(model, outpath, gen_path)
 
-    file_done = open(gen_path+"_sol.txt", "w")
+    file_done = open(gen_path+"-sol_done.txt", "w")
     file_done.close()
