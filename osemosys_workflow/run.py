@@ -6,11 +6,14 @@ import gurobipy
 import pandas as pd
 
 def sol_gurobi(lp_path: str):
-    #lp_path = "data/utopia2/utopia2.lp" #for testing
     m = gurobipy.read(lp_path)
     m.optimize()
 
     return m
+
+def del_lp(p_lp: str):
+    os.remove(p_lp)
+    return
 
 def get_dual(model):
     try:
@@ -49,6 +52,7 @@ if __name__ == "__main__":
     outpath = gen_path + ".sol"
     
     model = sol_gurobi(lp_path)
+    del_lp(lp_path)
     df_dual = get_dual(model)
     write_dual(df_dual, gen_path)
     write_sol(model, outpath, gen_path)
