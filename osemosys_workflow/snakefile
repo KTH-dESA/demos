@@ -15,21 +15,23 @@ rule build_lp:
     input:
         df_path = "data/{scen}/{scen}.txt"
     params:
-        model_path = "model/osemosys.txt"
-    output:
+        model_path = "model/osemosys.txt",
         lp_path = "data/{scen}/{scen}.lp"
+    output:
+        lp_complete_path = "data/{scen}/lp_done.txt"
     shell:
-        "glpsol -m {params.model_path} -d {input.df_path} --wlp {output.lp_path} --check"
+        "python gen_lp.py {input.df_path} {params.lp_path}"
 
 rule run_model:
     input:
-        lp_path = "data/{scen}/{scen}.lp"
+        lp_complete_path = "data/{scen}/lp_done.txt"
     params:
+        lp_path = "data/{scen}/{scen}.lp",
         path = "results/{scen}/{scen}"
     output:
         done_path = "results/{scen}/{scen}-sol_done.txt"
     shell:
-        "python run.py {input.lp_path} {params.path}"
+        "python run.py {params.lp_path} {params.path}"
 
 rule convert_sol:
     input:
