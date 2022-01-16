@@ -15,19 +15,31 @@ def del_lp(p_lp: str):
     os.remove(p_lp)
     return
 
-def get_dual(model):
+def get_duals(model):
+    constraints = ['Constr E8_AnnualEmissionsLimit']
     try:
         dual = model.Pi
         constr = model.getConstrs()
-        df_dual = pd.DataFrame(dual, index=constr, columns=['value'])
+        df_dual = pd.DataFrame(data= {'info': constr, 'value': dual})
+        df_dual = df_dual.astype({'info': 'str'})
+        meta = df_dual['info'].str.split('.', expand=True)
+        meta = meta[1].str.split('(', expand=True)
+        df_dual['constraint'] = meta[0]
+        df_dual['sets'] = meta[1].str[:-2]
+        df_dual = df_dual.drop(columns=['info'])
     except:
-        df_dual = pd.DataFrame(columns=['value'])
-    return df_dual
+        df_dual = pd.DataFrame(columns=['value', 'constraint', 'sets'])
+    dic_duals = {}
+    if not df_dual.empty:
+        for c in constraints:
+            dic_duals[c] = df_dual[df_dual['constraint']==c]
+    return dic_duals
 
-def write_dual(df_dual: pd.DataFrame, path: str):
+def write_duals(dict_duals: dict, path: str):
     path_res = os.sep.join(path.split('/')[:-1]+['results_csv'])
     os.mkdir(path_res)
-    df_dual.to_csv('%(path)s/Dual.csv' % {'path': path_res})
+    for df in dict_duals:
+        dict_duals[df].to_csv('%(path)s/Dual_%(constr)s.csv' % {'path': path_res, 'constr': df}, index=False)
     return
 
 def write_sol(sol, path_out: str, path_gen: str):
@@ -53,8 +65,8 @@ if __name__ == "__main__":
     
     model = sol_gurobi(lp_path)
     del_lp(lp_path)
-    df_dual = get_dual(model)
-    write_dual(df_dual, gen_path)
+    dic_duals = get_duals(model)
+    write_duals(dic_duals, gen_path)
     write_sol(model, outpath, gen_path)
 
     file_done = open(gen_path+"-sol_done.txt", "w")
