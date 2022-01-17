@@ -16,7 +16,7 @@ def del_lp(p_lp: str):
     return
 
 def get_duals(model):
-    constraints = ['Constr E8_AnnualEmissionsLimit']
+    constraints = ['Constr EQ_SpecifiedDemand'] #'Constr E8_AnnualEmissionsLimit']
     try:
         dual = model.Pi
         constr = model.getConstrs()
@@ -33,6 +33,10 @@ def get_duals(model):
     if not df_dual.empty:
         for c in constraints:
             dic_duals[c] = df_dual[df_dual['constraint']==c]
+            if not dic_duals[c].empty:
+                sets = dic_duals[c]['sets'].str.split(',', expand=True).add_prefix('set_')
+                dic_duals[c] = pd.concat([dic_duals[c], sets], axis=1)
+                dic_duals[c] = dic_duals[c].drop(columns=['sets'])
     return dic_duals
 
 def write_duals(dict_duals: dict, path: str):
