@@ -16,7 +16,7 @@ def del_lp(p_lp: str):
     return
 
 def get_duals(model):
-    constraints = ['Constr EQ_SpecifiedDemand'] #'Constr E8_AnnualEmissionsLimit']
+    constraints = ['Constr E8_AnnualEmissionsLimit']
     try:
         dual = model.Pi
         constr = model.getConstrs()
