@@ -44,3 +44,23 @@ rule convert_sol:
         res_path = "results/{scen}/res-csv_done.txt"
     shell:
         "python convert.py {params.sol_path} {params.res_folder} {input.dp_path}"
+
+rule create_configs:
+    input:
+        config_tmpl = "data/config.yaml"
+    output:
+        config_scen = "data/config_{scen}.yaml"
+    shell:
+    "python ed_config.py {scen} {input.config_tmpl} {output.config_scen}"
+
+rule res_to_iamc:
+    input:
+        res_path = "results/{scen}/res-csv_done.txt"
+    params:
+        inputs_folder = "data/{scen}/data"
+        res_folder = "results/{scen}/results_csv"
+        config_file = # needs to be modified, manually or by script?
+    output:
+        output_file = "results/{scen}/{scen}.xlsx"
+    shell:
+        "python resultify.py {params.inputs_folder} {params.res_folder} {params.config_file} {output.output_file}"
