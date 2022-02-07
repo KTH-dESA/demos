@@ -62,5 +62,7 @@ rule res_to_iamc:
         res_folder = "results/{scen}/results_csv"
     output:
         output_file = "results/{scen}/{scen}.xlsx"
+    conda:
+        "envs/openentrance_env.yaml"
     shell:
         "python resultify.py {params.inputs_folder} {params.res_folder} {input.config_file} {output.output_file}"
