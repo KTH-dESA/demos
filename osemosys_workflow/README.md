@@ -1,3 +1,5 @@
+# ***NB: This workflow is being furtherdeveloped under the [OSeMBE_ECEMF](https://github.com/KTH-dESA/OSeMBE_ECEMF/tree/main) repository.***
+
 # OSeMOSYS workflow
 This repo contains a workflow that allows to run one or multiple scenarios. Starting from an OSeMOSYS datapackage going through all steps running the model with gurobi and producing the results in csv format.
 
